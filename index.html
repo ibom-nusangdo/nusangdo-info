@@ -1,1 +1,297 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>누상도 정보방</title><p style="font-family:sans-serif;padding:24px">정보방 준비 중이에요.</p>
+<title>누상도 정보공유 모음집</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* Layout: 포스터와 같은 차콜 머리띠 + 검색창, 아래로 최신 회차부터 카드 목록. 카드를 누르면 포스터가 세로로 쭉 이어지는 보기 화면 */
+:root{
+  --band:#23262D; --band-fg:#FFFFFF; --band-sub:#B9BCC3;
+  --coral:#E8795A; --coral-ink:#A3421F; --coral-soft:#FCE9E1;
+  --bg:#F4F2EF; --card:#FFFFFF; --fg:#23262D; --muted:#5E636B; --line:#DEDAD4; --chip:#ECEAE6; --mark:#FBDCCF;
+  --shadow:0 8px 24px rgba(35,38,45,.07);
+  --display:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17191E; --card:#22252C; --fg:#EEEAE6; --muted:#A4A8B0; --line:#343841; --chip:#2E323A; --coral-soft:#3A2620; --coral-ink:#F5A487; --mark:#5A3326; --shadow:0 8px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17191E; --card:#22252C; --fg:#EEEAE6; --muted:#A4A8B0; --line:#343841; --chip:#2E323A; --coral-soft:#3A2620; --coral-ink:#F5A487; --mark:#5A3326; --shadow:0 8px 24px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:none;text-size-adjust:none}
+body{word-break:keep-all;overflow-wrap:break-word}
+/* 안드로이드 앱 안 브라우저(카톡 등)의 글씨 자동 확대 끄기 */
+body,body *{max-height:1000000px}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.band{background:var(--band);color:var(--band-fg);border-radius:0 0 36px 36px}
+header.band .wrap{padding-block:36px 32px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.pill{display:inline-block;color:#F5A487;border:1.5px solid rgba(245,164,135,.55);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;letter-spacing:.5px}
+.logo{width:120px;height:auto;display:block}
+h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(21px,4.8vw,34px);line-height:1.35;letter-spacing:-.5px;text-wrap:balance}
+h1 span{color:var(--coral)}
+h1 .nowrap{color:inherit;white-space:nowrap}
+.eyebrow{font-size:clamp(25px,5.6vw,34px);font-weight:900;color:#F5A487;letter-spacing:.3px}
+.lead{margin:0;color:var(--band-sub);font-size:15px;max-width:60ch}
+.search{position:relative}
+.search label{position:absolute;left:-9999px}
+.search input{width:100%;font:inherit;font-size:17px;padding:14px 16px 14px 46px;border-radius:14px;border:2px solid transparent;background:#FFFFFF;color:#23262D;outline:none}
+.search input:focus{border-color:var(--coral)}
+.search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:20px;height:20px;stroke:#6B7079}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:14px;font-weight:700;padding:7px 14px;border-radius:999px;border:1.5px solid rgba(255,255,255,.22);background:transparent;color:#E4E5E8;cursor:pointer;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--coral);border-color:var(--coral);color:#2A1A14}
+.chip:focus-visible,.card:focus-visible,.btn:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+main .wrap{padding-block:24px 48px;display:flex;flex-direction:column;gap:14px}
+.status{color:var(--muted);font-size:14px;font-weight:700}
+.list{display:flex;flex-direction:column;gap:14px;margin:0;padding:0;list-style:none}
+.card{display:flex;gap:16px;align-items:stretch;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:0;border-radius:22px;padding:16px;box-shadow:var(--shadow);cursor:pointer}
+@media (hover:hover) and (pointer:fine){.card:hover .card-title{color:var(--coral-ink)}}
+.thumb{flex:0 0 108px;height:136px;border-radius:12px;overflow:hidden;background:var(--chip)}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.card-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.no{font-family:var(--display);font-weight:400;font-size:20px;color:var(--coral);line-height:1}
+.tag{background:var(--coral-soft);color:var(--coral-ink);font-weight:700;padding:2px 9px;border-radius:7px}
+.card-title{margin:0;font-size:19px;font-weight:900;line-height:1.35;text-wrap:balance}
+.card-sum{margin:0;font-size:14.5px;color:var(--muted);line-height:1.55}
+.count{margin-top:auto;font-size:13px;font-weight:700;color:var(--coral-ink)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.next{background:var(--coral-soft);color:var(--coral-ink);border-radius:16px;padding:14px 18px;font-size:14.5px;font-weight:500}
+.next b{font-weight:900}
+.empty{background:var(--card);border-radius:22px;padding:28px 22px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-size:17px;margin-bottom:4px}
+footer{color:var(--muted);font-size:13px;text-align:center;padding-block:8px 32px}
+/* 보기 화면 */
+.viewer{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.vbar{position:sticky;top:0;z-index:2;background:var(--band);color:var(--band-fg);padding-top:env(safe-area-inset-top,0px)}
+.vbar .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.vtitle{flex:1 1 auto;min-width:0;font-weight:900;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{font:inherit;font-size:14px;font-weight:700;border-radius:10px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:#FFFFFF;padding:8px 14px;min-height:40px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn.primary{background:var(--coral);border-color:var(--coral);color:#2A1A14}
+.pages{max-width:720px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.page{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.page img{display:block;width:100%;height:auto}
+.page-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;font-size:13px;color:var(--muted)}
+.page-foot a{color:var(--coral-ink);font-weight:700;text-decoration:none}
+.vnav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.vnav .btn{color:var(--fg);border-color:var(--line);background:var(--card)}
+/* 이미지 저장 막기: 길게 누르기·우클릭·드래그 차단, 이미지 위에 투명 막 */
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.guard{position:relative;display:block}
+.guard::after{content:"";position:absolute;inset:0}
+.page,.thumb{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+@media (max-width:480px){.thumb{flex-basis:84px;height:110px}.card{padding:12px;gap:12px}.card-title{font-size:17px}.logo{width:96px}}
+@media (prefers-reduced-motion:no-preference){.card{transition:transform .15s}.card:active{transform:scale(.99)}}
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="top">
+      <span class="pill">누구나 상담사 도전기</span>
+      <img class="logo" src="img/logo.png" alt="이봄">
+    </div>
+    <div class="eyebrow">누상도 정보공유 모음집</div>
+    <h1>매주 <span class="nowrap">월·수·금</span> 올라오는<br>정보공유를 <span>한번에 모아봐요!</span></h1>
+    <p class="lead">필기·면접 준비부터 연수와 현장까지,<br><span style="white-space:nowrap">지난 회차도 검색해서</span> <span style="white-space:nowrap">언제든 다시 찾아보세요.</span></p>
+    <div class="search">
+      <label for="q">정보공유 검색</label>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <input id="q" type="search" placeholder="예: 면접 일정, MMPI, 쉼터" autocomplete="off">
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="주제별로 보기"></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="status" id="status" aria-live="polite"></div>
+    <ul class="list" id="list"></ul>
+    <div class="next" id="next" hidden></div>
+    <div class="empty" id="empty" hidden><b>찾는 정보가 아직 없어요</b>다른 단어로 검색하거나, 궁금한 주제를 이봄에게 알려 주세요.</div>
+  </div>
+</main>
+<footer>누구나 상담사 도전기 · 이봄</footer>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="vtitle">
+  <div class="vbar"><div class="wrap">
+    <button class="btn" id="vclose" type="button" aria-label="목록으로 돌아가기">← 목록</button>
+    <div class="vtitle" id="vtitle"></div>
+  </div></div>
+  <div class="pages" id="pages"></div>
+</div>
+
+<script>
+/* 새 회차는 이 목록 맨 위에 추가해요. date는 단톡방에 올리는 날(월·수·금)이고, 그날 한국 시간 오전 7시부터 페이지에 보여요(2026-10-19만 오전 8시) */
+const POSTS = [
+  { no:'010', fname:'정보공유_SCT문장완성검사해석기초', date:'2026-11-04', cat:'심리검사', title:'SCT(문장완성검사), 어떻게 해석할까?',
+    sum:'SCT의 구성, 4개 영역, 2·1·0·X 평정 기준과 해석하는 순서를 정리했어요.',
+    kw:'SCT 문장완성검사 SSCT 삭스 Sacks 문장 머리 심리검사 투사 가족 영역 성적 영역 대인관계 영역 자기개념 영역 어머니 아버지 가족 이성관계 결혼 친구 권위자 두려움 죄책감 능력 과거 미래 목표 평정 2 1 0 X 심한 손상 경미한 손상 확인 불능 역동 현재 상태 해석 순서 사례지 면접 필기 MMPI-A',
+    pages:['010-1','010-2'] },
+  { no:'009', fname:'정보공유_면접원서접수방법', date:'2026-11-02', cat:'시험·자격', title:'면접 원서 접수, 이렇게 하세요',
+    sum:'면접 원서 접수 기간과 방법, 수수료·사진 규정, 꼭 챙길 것과 취소·환불 기준을 정리했어요.',
+    kw:'면접 원서 접수 원서접수 2차 11월 2일 11월 6일 큐넷 인터넷 수수료 16000원 사진 여권용 6개월 선착순 시험장 날짜 장소 수험표 출력 접수완료 빈자리 없음 취소 환불 100% 60% 50% 큐파인더 Q-Finder 응시자격 서류',
+    pages:['009-1','009-2'] },
+  { no:'008', fname:'정보공유_상담자윤리핵심', date:'2026-10-30', cat:'상담 윤리', title:'상담자 윤리, 꼭 알아야 할 핵심',
+    sum:'비밀보장과 그 예외, 미성년 내담자, 법으로 정해진 신고 의무, 다중관계를 정리했어요.',
+    kw:'윤리 상담윤리 윤리강령 윤리규정 상담심리학회 비밀보장 비밀유지 예외 한계 사전동의 생명 안전 자살 타해 감염 질병 법원 최소한 미성년 보호자 법정대리인 신고의무 신고의무자 아동학대 112 성범죄 수사기관 과태료 300만원 다중관계 이중관계 성적관계 3년 청소년상담복지센터 청소년쉼터 면접',
+    pages:['008e-1','008e-2'] },
+  { no:'007', fname:'정보공유_MMPI-A척도한눈에보기', date:'2026-10-28', cat:'심리검사', title:'MMPI-A 척도 한눈에 보기',
+    sum:'타당도 척도 8개와 임상 척도 10개의 의미, T점수 읽는 법, 해석 순서를 정리했어요.',
+    kw:'MMPI MMPI-A 엠엠피아이 다면적인성검사 심리검사 심리측정 타당도 척도 무응답 VRIN TRIN F1 F2 F L K 부인 교정 방어성 임상척도 건강염려증 우울증 히스테리 반사회성 남성성 여성성 편집증 강박증 정신분열증 경조증 내향성 Hs D Hy Pd Mf Pa Pt Sc Ma Si T점수 65 60 경계 해석 순서 K교정 내용척도 보충척도 사례지 면접 필기',
+    pages:['007-1','007-2'] },
+  { no:'006', fname:'정보공유_청소년상담사2급면접평가', date:'2026-10-26', cat:'시험·자격', title:'청소년상담사 2급 면접, 어떻게 평가할까?',
+    sum:'면접 진행 방식과 평가항목 5가지, 합격 기준과 당일 준비물을 정리했어요.',
+    kw:'면접 2차 평가항목 평정요소 가치관 정신자세 전문적 지식 수련 예의 품행 성실성 의사표현 정확성 논리성 창의력 판단력 지도력 면접위원 3명 조 비번호 25점 15점 합격기준 과락 1점 신분증 수험표 복장 제복 필기면제 면접대비',
+    pages:['006-1','006-2'] },
+  { no:'005', fname:'정보공유_자격연수후기', date:'2026-10-23', cat:'연수', title:'이봄이 경험한 자격연수 후기',
+    sum:'과제 제출, 이러닝, 집합연수(ZOOM) 꿀팁과 과목별 진행 방식을 직접 들은 후기로 정리했어요.',
+    kw:'연수 자격연수 연수후기 후기 과제 과제제출 이러닝 사전질문 2배속 퀴즈 이수 집합연수 줌 ZOOM 사전테스트 배경 교재 6권 출석체크 9시30분 소그룹 발표 지목 시연 집단슈퍼비전 청소년상담과정과 기법 지역사회상담 부모상담 학업상담 진로상담 심리평가 위기개입 품행장애 중독 성문제 자살 자해 50분 10분',
+    pages:['005r-1','005r-2'] },
+  { no:'004', fname:'정보공유_필기합격이후일정', date:'2026-10-21', cat:'시험·자격', title:'필기 합격 발표 이후 일정 총정리',
+    sum:'제25회 필기 발표부터 면접, 응시자격 서류 제출, 최종 합격까지의 날짜와 놓치면 안 되는 것.',
+    kw:'일정 시험일정 제25회 2026 필기 합격 발표 10월 21일 합격예정자 면접 원서접수 11월 2일 6일 면접시험 11월 30일 12월 5일 12월 23일 응시자격 서류 제출 2027 3월 최종합격 자격연수 큐넷 무효 필기면제',
+    pages:['004-1','004-2'] },
+  { no:'003', fname:'정보공유_청소년상담사123급차이', date:'2026-10-19', cat:'시험·자격', title:'청소년상담사 1·2·3급, 무엇이 다를까?',
+    sum:'급수별 응시자격과 필기 시험 과목, 합격 기준, 자격연수를 한눈에 비교했어요.',
+    kw:'1급 2급 3급 급수 차이 응시자격 학사 석사 박사 전문학사 고졸 실무경력 상담관련분야 시험과목 필수 선택 발달심리 집단상담 심리측정 상담이론 학습이론 청소년이해론 청소년수련활동론 이상심리 상담연구방법론 진로상담 가족상담 학업상담 비행상담 성상담 약물상담 위기상담 청소년 관련 법과 행정 사례지도 합격기준 40점 60점 25문항 자격연수 100시간 필기 면접',
+    pages:['003-1','003-2'] },
+  { no:'002', fname:'정보공유_청소년상담사일하는곳', date:'2026-10-16', cat:'현장·진로', title:'청소년상담사, 어디서 일할까?',
+    sum:'청소년상담복지센터부터 쉼터, 꿈드림, 디딤센터까지 대표 기관과 하는 일을 정리했어요.',
+    kw:'취업 진로 근무처 기관 한국청소년상담복지개발원 청소년상담복지센터 1388 청소년동반자 찾아가는 상담 채용 청소년쉼터 일시 단기 중장기 청소년자립지원관 학교밖청소년지원센터 꿈드림 검정고시 국립청소년디딤센터 정서 행동 Wee센터 청소년수련관 문화관 사회복지관 가족센터 지자체',
+    pages:['002-1','002-2'] },
+  { no:'001', fname:'정보공유_법제도변화', date:'2026-10-14', cat:'법·제도', title:'2026년 꼭 알아야 할 청소년 법·제도 변화',
+    sum:'부처 이름 변경, 쉼터 입소 시 보호자 통보 예외, 친족 성범죄 공소시효 폐지 등 다섯 가지.',
+    kw:'법 법령 개정 제도 성평등가족부 여성가족부 청소년복지 지원법 시행령 쉼터 입소 보호자 통보 예외 가정 밖 청소년 청소년 보호법 예방적 회복적 보호지원 이주배경청소년지원센터 지방자치단체 청소년성보호법 아청법 친족 성범죄 공소시효 폐지 필기 면접 연수',
+    pages:['001-1'] }
+];
+const CATS = ['전체','법·제도','시험·자격','현장·진로','상담 윤리','연수','심리검사'];
+
+/* 카톡 등 앱 안 브라우저가 글씨를 키워 보여 줄 때, 원래 크기로 맞춰요 */
+function fitText(){
+  try{
+    if(document.body.dataset.fit) return;
+    const host=document.querySelector('main .wrap')||document.body;
+    const p=document.createElement('p');
+    p.setAttribute('aria-hidden','true');
+    p.style.cssText='margin:0;padding:0;font-family:sans-serif;font-size:16px;line-height:1.6;letter-spacing:0;visibility:hidden;position:relative;';
+    const probe=document.createElement('span'); probe.textContent='가나다라마바사아자차';
+    p.appendChild(probe); p.appendChild(document.createTextNode(' 가나다라 마바사아 자차카타 파하 '.repeat(40)));
+    host.appendChild(p);
+    void p.offsetHeight;
+    const got=probe.getBoundingClientRect().width;
+    const fs=parseFloat(getComputedStyle(probe).fontSize)||16;
+    p.remove();
+    const c=document.createElement('canvas').getContext('2d'); c.font='16px sans-serif';
+    const want=c.measureText('가나다라마바사아자차').width;
+    let r=Math.max(want>0?got/want:1, fs/16);
+    if(r>1.05 && r<2.5){ document.body.style.zoom=(1/r).toFixed(3); document.body.dataset.fit=r.toFixed(2); }
+  }catch(e){}
+}
+window.addEventListener('load',()=>requestAnimationFrame(()=>requestAnimationFrame(fitText)));
+const $ = id => document.getElementById(id);
+const DAYS = ['일','월','화','수','목','금','토'];
+const kst = new Date(Date.now() + 9*3600*1000);
+const NOW = kst.toISOString().slice(0,16);
+const openTime = d => d === '2026-10-19' ? '08:00' : '07:00';
+const isLive = p => `${p.date}T${openTime(p.date)}` <= NOW;
+const fmt = d => { const [y,m,dd] = d.split('-').map(Number); const w = DAYS[new Date(Date.UTC(y,m-1,dd)).getUTCDay()]; return `${y}.${m}.${dd} (${w})`; };
+const LIVE = POSTS.filter(isLive);
+const NEXT = POSTS.filter(p => !isLive(p)).sort((a,b)=>a.date.localeCompare(b.date))[0];
+const qEl = $('q'), listEl = $('list'), statusEl = $('status'), emptyEl = $('empty');
+let cat = '전체';
+
+const norm = s => (s||'').toLowerCase().replace(/[\s·.,()\-–~'‘’"“”]/g,'');
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function hi(text, words){
+  let out = esc(text);
+  words.forEach(w=>{ if(!w) return;
+    const re = new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    out = out.replace(re,'<mark>$1</mark>'); });
+  return out;
+}
+
+function renderChips(){
+  $('chips').innerHTML = CATS.map(c=>`<button class="chip" type="button" aria-pressed="${c===cat}" data-cat="${c}">${c}</button>`).join('');
+}
+$('chips').addEventListener('click', e=>{
+  const b = e.target.closest('.chip'); if(!b) return;
+  cat = b.dataset.cat; renderChips(); render();
+});
+
+function render(){
+  const raw = qEl.value.trim();
+  const words = raw.split(/\s+/).filter(Boolean);
+  const nwords = words.map(norm).filter(Boolean);
+  const shown = LIVE.filter(p=>{
+    if(cat!=='전체' && p.cat!==cat) return false;
+    const hay = norm([p.no,'no'+p.no,p.title,p.sum,p.kw,p.cat].join(' '));
+    return nwords.every(w=>hay.includes(w));
+  });
+  listEl.innerHTML = shown.map(p=>`
+    <li><button class="card" type="button" data-no="${p.no}">
+      <span class="thumb"><img src="img/${p.pages[0]}-thumb.jpg" alt="" loading="lazy" draggable="false"></span>
+      <span class="card-body">
+        <span class="meta"><span class="no">NO.${p.no}</span><span class="tag">${p.cat}</span><span>${fmt(p.date)}</span></span>
+        <span class="card-title">${hi(p.title,words)}</span>
+        <span class="card-sum">${hi(p.sum,words)}</span>
+        <span class="count">포스터 ${p.pages.length}장 보기 →</span>
+      </span>
+    </button></li>`).join('');
+  emptyEl.hidden = shown.length>0;
+  statusEl.textContent = raw || cat!=='전체'
+    ? `${shown.length}개를 찾았어요`
+    : `지금까지 ${LIVE.length}개의 정보공유가 있어요`;
+}
+qEl.addEventListener('input', render);
+listEl.addEventListener('click', e=>{
+  const b = e.target.closest('.card'); if(b) openPost(b.dataset.no, 'push');
+});
+
+let lastFocus = null;
+function openPost(no, mode){
+  const i = LIVE.findIndex(p=>p.no===no); if(i<0) return;
+  const p = LIVE[i];
+  lastFocus = document.activeElement;
+  $('vtitle').textContent = `NO.${p.no} · ${p.title}`;
+  const prev = LIVE[i+1], next = LIVE[i-1];
+  $('pages').innerHTML = p.pages.map((k,j)=>`
+    <figure class="page" style="margin:0">
+      <span class="guard"><img src="img/${k}.jpg" alt="정보공유 NO.${p.no} ${p.title} ${j+1}장" draggable="false"></span>
+      <figcaption class="page-foot"><span>${j+1} / ${p.pages.length}장</span><span>누구나 상담사 도전기 · 이봄</span></figcaption>
+    </figure>`).join('') + `
+    <div class="vnav">
+      ${prev?`<button class="btn" type="button" data-go="${prev.no}">← NO.${prev.no}</button>`:'<span></span>'}
+      ${next?`<button class="btn" type="button" data-go="${next.no}">NO.${next.no} →</button>`:'<span></span>'}
+    </div>`;
+  const v = $('viewer'); v.hidden = false; v.scrollTop = 0;
+  document.body.style.overflow='hidden';
+  try{
+    if(mode==='push') history.pushState({v:p.no},'','#no'+p.no);
+    else if(mode==='replace') history.replaceState({v:p.no},'','#no'+p.no);
+  }catch(e){}
+  $('vclose').focus();
+}
+function hideViewer(){
+  $('viewer').hidden = true; document.body.style.overflow='';
+  if(lastFocus && lastFocus.focus) lastFocus.focus();
+}
+function closePost(){
+  if(history.state && history.state.v){ history.back(); }
+  else { hideViewer(); try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} }
+}
+$('vclose').addEventListener('click', closePost);
+/* 휴대폰 뒤로가기: 포스터 보기 → 목록으로 */
+window.addEventListener('popstate', ()=>{
+  const h=(location.hash||'').match(/^#no(\d{3})$/);
+  if(h && LIVE.some(p=>p.no===h[1])) openPost(h[1], null); else hideViewer();
+});
+$('pages').addEventListener('click', e=>{ const b=e.target.closest('[data-go]'); if(b) openPost(b.dataset.go,'replace'); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('viewer').hidden) closePost(); });
+
+['contextmenu','dragstart'].forEach(t=>document.addEventListener(t,e=>{ if(e.target.closest('.page,.thumb,.guard,img')) e.preventDefault(); }));
+renderChips(); render();
+if(NEXT){ const n=$('next'); n.hidden=false; const josa='2459'.includes(NEXT.no.slice(-1))?'는':'은'; n.innerHTML=`<b>NO.${NEXT.no}</b>${josa} ${fmt(NEXT.date)} 오전 ${openTime(NEXT.date)==='08:00'?8:7}시에 올라와요.<br><span style="white-space:nowrap">월·수·금 오전 7시마다</span> 새 정보공유가 더해져요.`; }
+const m = (location.hash||'').match(/^#no(\d{3})$/);
+if(m && LIVE.some(p=>p.no===m[1])){ try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} openPost(m[1], 'push'); }
+</script>
